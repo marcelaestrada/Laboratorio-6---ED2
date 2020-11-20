@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 
 namespace CifradoRSA.Metodos
@@ -96,6 +97,35 @@ namespace CifradoRSA.Metodos
                 }
             }
             return cortes;
+        }
+
+        public byte[] juntarNumeros(byte[] arregloBytes)
+        {
+            int contador = 0;
+            byte[] listaOriginal = new byte[arregloBytes.Length/2];
+            for(int i = 0; i < arregloBytes.Length; i++)
+            {
+                string binario = Convert.ToString(arregloBytes[i], 2);
+                i++;
+                binario += Convert.ToString(arregloBytes[i], 2);
+                listaOriginal[contador] = (byte)(Convert.ToInt32(binario, 2));
+                contador++;
+            }
+            return listaOriginal;
+        }
+
+        public string descifrar(byte[] arregloBytes, int n, int d)
+        {
+            string mensaje = "";
+            //byte[] original = juntarNumeros(arregloBytes);
+            int[] numeros = formulaCifDes(arregloBytes, n, d, arregloBytes.Length);
+
+            foreach (var item in numeros)
+            {
+                mensaje += Convert.ToChar(item);
+            }
+
+            return mensaje;
         }
     }
 }

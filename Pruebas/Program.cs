@@ -13,8 +13,8 @@ namespace Pruebas
             int d = 0;
             int cont = 0;
             CifradoRSA.Cifrado cipher = new CifradoRSA.Cifrado();
-            FileStream filestream = new FileStream(@"C:\Users\marce\Desktop\2020\Semestre II 2020\Estructura de datos II\Laboratorio\Laboratorio-6---ED2\Pruebas\cuento.txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
-            List<string> listaClave = cipher.generarClaves(61, 53);
+            FileStream filestream = new FileStream(@"C:\Users\marce\Desktop\2020\Semestre II 2020\Estructura de datos II\Laboratorio\Laboratorio-6---ED2\Pruebas\resultadoRSA.txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            List<string> listaClave = cipher.generarClaves(51, 63);
 
             foreach(var item in listaClave)
             {
@@ -33,9 +33,9 @@ namespace Pruebas
                 }
             }
 
-            FileStream writer = new FileStream(@"C:\Users\marce\Desktop\2020\Semestre II 2020\Estructura de datos II\Laboratorio\Laboratorio-6---ED2\Pruebas\resultadoRSA.txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+            FileStream writer = new FileStream(@"C:\Users\marce\Desktop\2020\Semestre II 2020\Estructura de datos II\Laboratorio\Laboratorio-6---ED2\Pruebas\descifrado.txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
             StreamWriter write = new StreamWriter(writer);
-            string cifrado = cipher.cifrarDescifrar(filestream, n, e);
+            string cifrado = cipher.descifrar(filestream, n, d);
             write.Write(cifrado);
             writer.Close();
         }
