@@ -14,7 +14,7 @@ namespace Pruebas
             int cont = 0;
             CifradoRSA.Cifrado cipher = new CifradoRSA.Cifrado();
             FileStream filestream = new FileStream(@"C:\Users\marce\Desktop\2020\Semestre II 2020\Estructura de datos II\Laboratorio\Laboratorio-6---ED2\Pruebas\resultadoRSA.txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
-            List<string> listaClave = cipher.generarClaves(51, 63);
+            List<string> listaClave = cipher.generarClaves(307,311);
 
             foreach(var item in listaClave)
             {
@@ -34,10 +34,12 @@ namespace Pruebas
             }
 
             FileStream writer = new FileStream(@"C:\Users\marce\Desktop\2020\Semestre II 2020\Estructura de datos II\Laboratorio\Laboratorio-6---ED2\Pruebas\descifrado.txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
-            StreamWriter write = new StreamWriter(writer);
-            string cifrado = cipher.descifrar(filestream, n, d);
-            write.Write(cifrado);
+            //StreamWriter write = new StreamWriter(writer);
+            List<byte> cifrado = cipher.descifrar(filestream, n, d);
+            writer.Write(cifrado.ToArray());
             writer.Close();
+            //cipher.descifrar(filestream, n, d);
+            
         }
     }
 }

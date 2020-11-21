@@ -3,45 +3,70 @@ using CifradoRSA.Metodos;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 
 namespace CifradoRSA
 {
     public class Cifrado : ICifrado
     {
-        public string cifrar(FileStream archivo, int n, int ed)
+        public List<byte> cifrar(FileStream archivo, int n, int e)
         {
-            CifradoDescifrado cifdes = new CifradoDescifrado();
-            string mensaje = "";
-            archivo.Position = 0;
+            List<byte> lista = new List<byte>();
             var reader = new BinaryReader(archivo);
             var buffer = new byte[2000000];
-            while (archivo.Position < archivo.Length)
+            while (reader.BaseStream.Position != reader.BaseStream.Length)
             {
                 buffer = reader.ReadBytes(2000000);
-                mensaje += cifdes.cifrar(buffer, n, ed);
+                foreach (var item in buffer)
+                {
+                    var ok = BigInteger.ModPow(item, (BigInteger)e, (BigInteger)n);
+                    byte[] bytes = BitConverter.GetBytes((long)ok);
+                    foreach(var b in bytes)
+                    {
+                        lista.Add(b);
+                    }
+                }
             }
             reader.Close();
             archivo.Close();
 
-            return mensaje;
+            return lista;
         }
 
-        public string descifrar(FileStream archivo, int n, int d)
+        public List<byte> descifrar(FileStream archivo, int n, int d)
         {
-            CifradoDescifrado cifdes = new CifradoDescifrado();
             string mensaje = "";
-            archivo.Position = 0;
+            List<byte> lista = new List<byte>();
+            int cont = 0;
             var reader = new BinaryReader(archivo);
             var buffer = new byte[2000000];
-            while (archivo.Position < archivo.Length)
+            List<byte> bytes = new List<byte>();
+            while (reader.BaseStream.Position != reader.BaseStream.Length)
             {
                 buffer = reader.ReadBytes(2000000);
-                mensaje += cifdes.descifrar(buffer, n, d);
+                foreach (var item in buffer)
+                {
+                    bytes.Add(item);
+                    if (bytes.Count==8)
+                    {
+                        byte[] by = new byte[bytes.Count];
+                        foreach(var bytee in bytes)
+                        {
+                            by[cont] = bytee;
+                            cont++;
+                        }
+                        long num = BitConverter.ToInt32(by, 0);
+                        var ok = BigInteger.ModPow(num, (BigInteger)d, (BigInteger)n);
+                        lista.Add((byte)ok);
+                        bytes.Clear();
+                        cont = 0;
+                    }
+                }
             }
             reader.Close();
             archivo.Close();
 
-            return mensaje;
+            return lista;
         }
 
         public List<string> generarClaves(int p, int q)
